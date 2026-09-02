@@ -200,6 +200,11 @@
 
 <body>
 
+  <!-- BGM -->
+  <audio id="bgm" preload="auto" loop autoplay>
+    <source src="bgm.wav" type="audio/wav">
+  </audio>
+
   <!-- 紙吹雪 -->
   <div id="confetti-container"></div>
 
@@ -455,9 +460,27 @@ MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 
     }, 5000);
 
+    // BGM自動再生トライ ＆ 初回クリック時の確実な再生
+    window.addEventListener("DOMContentLoaded", () => {
+      const bgm = document.getElementById("bgm");
+      if (bgm) {
+        bgm.play().catch(() => {
+          console.log("Autoplay blocked. Waiting for user interaction.");
+        });
+
+        const startAudio = () => {
+          if (bgm.paused) {
+            bgm.play();
+          }
+          document.removeEventListener("click", startAudio);
+        };
+        document.addEventListener("click", startAudio);
+      }
+    });
+
   </script>
+
+<!-- 「みないで」って言ったでしょ！！！ -->
 
 </body>
 </html>
-
-<!-- 「みないで」って言ったでしょ！！！ -->
