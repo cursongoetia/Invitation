@@ -464,6 +464,7 @@ MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
     window.addEventListener("DOMContentLoaded", () => {
       const bgm = document.getElementById("bgm");
       if (bgm) {
+        bgm.volume = 0.2;
         bgm.play().catch(() => {
           console.log("Autoplay blocked. Waiting for user interaction.");
         });
