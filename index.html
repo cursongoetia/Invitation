@@ -438,6 +438,12 @@ MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 
       // バグらせとけばかっこいい
       glitchScreen();
+
+　　　// BGMをスローにしてホラー展開
+      const bgm = document.getElementById("bgm");
+      if (bgm) {
+        bgm.playbackRate = 0.5;
+　　　}
     }
 
 
