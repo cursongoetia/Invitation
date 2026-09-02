@@ -96,6 +96,93 @@
       }
     }
 
+    /* =========================
+       隠し要素
+       ========================= */
+
+    .secret {
+      cursor: pointer;
+      transition:
+        color 0.12s ease,
+        text-shadow 0.12s ease;
+    }
+
+    .secret:hover {
+      color: #ff2020;
+      text-shadow:
+        0 0 5px #ff2020,
+        0 0 12px #ff2020,
+        0 0 20px #ff2020;
+    }
+
+    .secret.found {
+      color: #ff2020;
+      text-shadow:
+        0 0 5px #ff2020,
+        0 0 12px #ff2020;
+    }
+
+    .candy {
+      position: fixed;
+      top: -60px;
+      z-index: 999;
+      pointer-events: none;
+      user-select: none;
+      animation: candyFall linear forwards;
+    }
+
+    @keyframes candyFall {
+      0% {
+        transform: translateY(-60px) rotate(0deg);
+        opacity: 0;
+      }
+
+      8% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(115vh) rotate(720deg);
+        opacity: 1;
+      }
+    }
+
+    .glitching {
+      animation: screenGlitch 0.55s steps(2, end);
+    }
+
+    @keyframes screenGlitch {
+      0%   { transform: translate(0, 0); filter: none; }
+      15%  { transform: translate(-8px, 2px); filter: hue-rotate(90deg); }
+      30%  { transform: translate(7px, -2px); filter: contrast(2); }
+      45%  { transform: translate(-4px, 1px); filter: invert(0.15); }
+      60%  { transform: translate(6px, 0); filter: hue-rotate(-90deg); }
+      75%  { transform: translate(-3px, -1px); filter: none; }
+      100% { transform: translate(0, 0); filter: none; }
+    }
+
+    /* 全部発見後 */
+    body.final-secret {
+      color: #ff2020;
+    }
+
+    body.final-secret .text,
+    body.final-secret #ascii-art,
+    body.final-secret .cursor {
+      color: #ff2020;
+      text-shadow:
+        0 0 5px #ff2020,
+        0 0 12px #ff2020;
+    }
+
+    body.final-secret .cursor {
+      background: #ff2020;
+    }
+
+    body.final-secret .secret {
+      color: #ff2020;
+    }
+
     /* ASCIIアートをじわっと出す */
     @keyframes appear {
       from {
@@ -119,12 +206,12 @@
 
       <!-- 紙吹雪と同時に表示 -->
       <span class="line">
-        &gt; WELCOME BACK<span class="cursor"></span>
+        &gt; <span class="secret secret-welcome" data-secret="welcome" onclick="triggerSecret('welcome')">WELCOME</span> <span class="secret secret-back" data-secret="back" onclick="triggerSecret('back')">BACK</span><span class="cursor"></span>
       </span>
 
       <!-- これは後から表示 -->
       <span class="line" id="party-message">
-        &gt; THE PARTY IS STILL GOING
+        &gt; THE <span class="secret secret-party" data-secret="party" onclick="triggerSecret('party')">PARTY</span> IS STILL GOING
       </span>
 
       <!-- 最後に表示されるASCIIアート -->
@@ -230,6 +317,121 @@ MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
         "rotate(" + Math.random() * 360 + "deg)";
 
       container.appendChild(confetti);
+    }
+
+
+    // 3秒後にTHE PARTY IS STILL GOING
+    setTimeout(() => {
+
+      document.getElementById("party-message").style.visibility =
+        "visible";
+
+    }, 3000);
+
+
+    // =========================
+    // 隠し要素
+    // ========================= */
+
+    const foundSecrets = new Set();
+
+    function triggerSecret(name) {
+      if (foundSecrets.has(name)) return;
+
+      foundSecrets.add(name);
+
+      const target = document.querySelector(`[data-secret="${name}"]`);
+      if (target) {
+        target.classList.add("found");
+      }
+
+      if (name === "welcome") {
+        extraConfetti();
+      }
+
+      if (name === "party") {
+        candyRain();
+      }
+
+      if (name === "back") {
+        glitchScreen();
+      }
+
+      // 3つ全部見つけたら最終演出
+      if (foundSecrets.size === 3) {
+        setTimeout(finalSecret, 650);
+      }
+    }
+
+    // WELCOME：追加の紙吹雪
+    function extraConfetti() {
+      for (let i = 0; i < 180; i++) {
+        const confetti = document.createElement("div");
+
+        confetti.classList.add("confetti");
+
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.backgroundColor =
+          colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDuration =
+          (2 + Math.random() * 4) + "s";
+        confetti.style.animationDelay =
+          Math.random() * 0.6 + "s";
+        confetti.style.transform =
+          "rotate(" + Math.random() * 360 + "deg)";
+
+        container.appendChild(confetti);
+
+        setTimeout(() => {
+          confetti.remove();
+        }, 5000);
+      }
+    }
+
+    // PARTY：お菓子の雨
+    function candyRain() {
+      const candies = ["🍬", "🍭", "🍫", "🍪", "🧁", "🍩", "🍰"];
+
+      for (let i = 0; i < 90; i++) {
+        const candy = document.createElement("div");
+
+        candy.classList.add("candy");
+        candy.textContent =
+          candies[Math.floor(Math.random() * candies.length)];
+
+        candy.style.left = Math.random() * 100 + "vw";
+        candy.style.fontSize =
+          (14 + Math.random() * 22) + "px";
+        candy.style.animationDuration =
+          (2.5 + Math.random() * 3.5) + "s";
+        candy.style.animationDelay =
+          Math.random() * 1.2 + "s";
+
+        document.body.appendChild(candy);
+
+        setTimeout(() => {
+          candy.remove();
+        }, 7000);
+      }
+    }
+
+    // BACK：画面が一瞬バグる
+    function glitchScreen() {
+      document.body.classList.add("glitching");
+
+      setTimeout(() => {
+        document.body.classList.remove("glitching");
+      }, 600);
+    }
+
+    // 全部発見：文字が赤くなり、紙吹雪が止まらなくなる
+    function finalSecret() {
+      if (document.body.classList.contains("final-secret")) return;
+
+      document.body.classList.add("final-secret");
+
+      // 最初の大量発生
+      extraConfetti();
     }
 
 
