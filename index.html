@@ -1,3 +1,5 @@
+<!-- 恥ずかしいからみないで＞＜ -->
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -336,13 +338,12 @@ MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
     const foundSecrets = new Set();
 
     function triggerSecret(name) {
-      if (foundSecrets.has(name)) return;
-
-      foundSecrets.add(name);
-
-      const target = document.querySelector(`[data-secret="${name}"]`);
-      if (target) {
-        target.classList.add("found");
+      if (!foundSecrets.has(name)) {
+        foundSecrets.add(name);
+        const target = document.querySelector(`[data-secret="${name}"]`);
+        if (target) {
+          target.classList.add("found");
+        }
       }
 
       if (name === "welcome") {
@@ -424,14 +425,14 @@ MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
       }, 600);
     }
 
-    // 全部発見：文字が赤くなり、紙吹雪が止まらなくなる
+    // 全部発見：全文赤く染める
     function finalSecret() {
       if (document.body.classList.contains("final-secret")) return;
 
       document.body.classList.add("final-secret");
 
-      // 最初の大量発生
-      extraConfetti();
+      // バグらせとけばかっこいい
+      glitchScreen();
     }
 
 
@@ -458,3 +459,5 @@ MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 
 </body>
 </html>
+
+<!-- 「みないで」って言ったでしょ！！！ -->
